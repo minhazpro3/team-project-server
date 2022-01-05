@@ -32,6 +32,7 @@ async function run() {
           const subject = req.body.subject;
           const phone = req.body.phone;
           const about = req.body.about;
+          const age = req.body.age;
           const link = req.body.link;
           const picture = req.files.image;
           const pictureData = picture.data;
@@ -44,6 +45,7 @@ async function run() {
               phone,
               about,
               link,
+              age,
               image: imageBuffer
           }
           const result = await teachers.insertOne(services)
@@ -73,5 +75,5 @@ app.get('/', (req, res) => {
   })
   
   app.listen(port, () => {
-    console.log(`Example `)
+    console.log(`Example it `)
   })
