@@ -21,8 +21,8 @@ async function run() {
       await client.connect();
       const database = client.db('studyTeamScic');
       const teachers = database.collection('teachers');
-      const allPost = database.collection('allPost');
       const allEvent = database.collection('addEvent');
+      const allPost = database.collection('allPost');
 
 
 
@@ -61,21 +61,6 @@ async function run() {
         const result = await teachers.find({}).toArray()
         res.send(result)
       })
-
-
-      // create post 
-      app.post('/createPost', async (req,res)=>{
-        const query = req.body;
-        const result = await allPost.insertOne(query);
-        res.send(result)
-      })
-
-      // get post
-      app.get("/getPost", async (req,res)=>{
-        const result = await allPost.find({}).toArray()
-        res.send(result)
-      })
-
 
 
       // get teachers management
@@ -129,6 +114,46 @@ async function run() {
       const result = await allEvent.deleteOne(query)
       res.send(result)
     })
+
+
+        // new post
+
+        // add teachers
+        app.post('/newPost', async (req,res)=>{
+          const title= req.body.title;
+          const post = req.body.post;
+          const user = req.body.user;
+          const date = req.body.date;
+          const picture = req.files.image;
+          const pictureData = picture.data;
+          const encodedPicture = pictureData.toString('base64')
+          const imageBuffer = Buffer.from(encodedPicture, 'base64')
+          const services = {
+            title,
+            post,
+              user,
+              date,
+              image: imageBuffer
+          }
+          const result = await allPost.insertOne(services)
+          
+          res.json(result)
+      })
+
+
+      
+      // get post
+      app.get("/myPost", async (req,res)=>{
+        const result = await allPost.find({}).toArray()
+        res.send(result)
+      })
+
+
+
+
+   
+          
+      
 
 
       
