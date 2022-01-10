@@ -143,7 +143,7 @@ async function run() {
 
       
       // get post
-      app.get("/myPost", async (req,res)=>{
+      app.get("/morePost", async (req,res)=>{
         const result = await allPost.find({}).toArray()
         res.send(result)
       })
