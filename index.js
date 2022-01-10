@@ -19,10 +19,13 @@ console.log("database connected");
 
 async function run() {
     try {
-        await client.connect();
-        const database = client.db("studyTeamScic");
-        const teachers = database.collection("teachers");
-        // const classes = database.collection('classes');
+      await client.connect();
+      const database = client.db('studyTeamScic');
+      const teachers = database.collection('teachers');
+      const allEvent = database.collection('addEvent');
+      const allPost = database.collection('allPost');
+
+
 
         // add teachers
         app.post("/teachers", async (req, res) => {
@@ -52,11 +55,102 @@ async function run() {
             res.json(result);
         });
 
-        //   get all teachers
-        app.get("/allTeachers", async (req, res) => {
-            const result = await teachers.find({}).toArray();
-            res.send(result);
-        });
+
+      // get teachers management
+      app.get('/getTeachersInfo', async (req,res)=>{
+        const result = await teachers.find({}).toArray()
+        res.send(result)
+      })
+
+      // delete teachers
+      app.delete("/deleteTeacher/:id", async (req,res)=>{
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)}
+        const result = await teachers.deleteOne(query)
+        res.send(result)
+      })
+
+
+      // add event 
+      app.post('/addEvent', async (req,res)=>{
+        const title= req.body.title;
+        const description = req.body.description;
+        const location = req.body.location;
+        const date = req.body.date;
+        const picture = req.files.image;
+        const pictureData = picture.data;
+        const encodedPicture = pictureData.toString('base64')
+        const imageBuffer = Buffer.from(encodedPicture, 'base64')
+        const addEvent = {
+          title,
+          description,
+          location,
+          date,
+          image: imageBuffer
+        }
+        const result = await allEvent.insertOne(addEvent)
+        
+        res.json(result)
+    })
+
+
+      // get event 
+    app.get('/getEvent', async (req,res)=>{
+        const result = await allEvent.find({}).toArray()
+        res.send(result)
+    })
+
+    // delete event 
+    app.delete("/deleteEvent/:id", async (req,res)=>{
+      const id =req.params.id;
+      const query = {_id: ObjectId(id)}
+      const result = await allEvent.deleteOne(query)
+      res.send(result)
+    })
+
+
+        // new post
+
+        // add teachers
+        app.post('/newPost', async (req,res)=>{
+          const title= req.body.title;
+          const post = req.body.post;
+          const user = req.body.user;
+          const date = req.body.date;
+          const picture = req.files.image;
+          const pictureData = picture.data;
+          const encodedPicture = pictureData.toString('base64')
+          const imageBuffer = Buffer.from(encodedPicture, 'base64')
+          const services = {
+            title,
+            post,
+              user,
+              date,
+              image: imageBuffer
+          }
+          const result = await allPost.insertOne(services)
+          
+          res.json(result)
+      })
+
+
+      
+      // get post
+      app.get("/myPost", async (req,res)=>{
+        const result = await allPost.find({}).toArray()
+        res.send(result)
+      })
+
+
+
+
+   
+          
+      
+
+
+      
+     
     } finally {
         //   await client.close();
     }
