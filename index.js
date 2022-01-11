@@ -162,5 +162,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example it `);
+    console.log(`Example it is`);
 });
